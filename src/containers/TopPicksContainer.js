@@ -1,0 +1,21 @@
+import { connect } from 'react-redux'
+import { fetchTopPicks, fetchTopPicksProduct } from '../actions/index'
+import TopPick from '../components/TopPick'
+
+const mapStateToProps = (state, ownProps) => ({
+  components: state.topPicks.components,
+  isFetching: state.topPicks.isFetching,
+  pageId: ownProps.pageId,
+  products: state.products.items
+})
+
+const mapDispatchToProps = dispatch => ({
+  getTopPicks: (pageId) => {
+    dispatch(fetchTopPicks(pageId))
+  },
+  getProducts: (urls) => {
+    dispatch(fetchTopPicksProduct(urls))
+  }
+})
+
+export default connect(mapStateToProps,mapDispatchToProps)(TopPick)
