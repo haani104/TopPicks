@@ -2,8 +2,8 @@ import React from 'react'
 import { View, Image, StyleSheet, Text, Platform, Dimensions } from 'react-native'
 import unescape from 'lodash/unescape'
 import TKPTouchable from '../common/TKPTouchable'
-import WishListButton from '../common/WishlistButton'
 import Icon from 'react-native-vector-icons/Ionicons'
+import Rating from './Rating'
 
 const { width } = Dimensions.get('window')
 const styles = StyleSheet.create({
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   priceContainer: {
-    height: 40,
+    height: 20,
   },
   productGridNormalPrice: {
     paddingHorizontal: 10,
@@ -158,7 +158,6 @@ const styles = StyleSheet.create({
   location: {
     flex: 1,
     flexDirection: 'row',
-    paddingHorizontal: 10,
     alignItems: 'center',
   }
 })
@@ -200,6 +199,7 @@ const Product = ({ product, index, category }) => (
         )}
       </View>
     </View>
+    <Rating rating={product.rating} count={product.count_review} />
     <View style={styles.productBadgeWrapper}>
       {product.labels.map((l, i) => {
         let labelTitle = l.title
@@ -228,10 +228,12 @@ const Product = ({ product, index, category }) => (
     <View>
       <Text style={styles.shopName} ellipsizeMode="tail" numberOfLines={1}>{product.shop.name}</Text>
     </View>
-    <View style={styles.location}>
+    <View style={{paddingHorizontal: 10, flexDirection: 'row'}}>
+      <View style={styles.location}>
       <Icon name='ios-pin-outline' size={25} color="rgb(189,189,189)" />
       <Text style={styles.shopCityName}>{product.shop.city}</Text>
-      <View>
+      </View>
+      <View style={{}}>
         {product.badges.map(
           b =>
             b.title === 'Free Return' ? (
@@ -245,10 +247,6 @@ const Product = ({ product, index, category }) => (
         )}
       </View>
     </View>
-    <WishListButton
-      isWishlist={product.is_wishlist || false}
-      productId={product.id}
-    />
   </View>
 )
 

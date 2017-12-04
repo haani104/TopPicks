@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
     height: 100,
     marginTop: 10,
     resizeMode: 'center',
+    paddingHorizontal: 10,
   }
 })
 
