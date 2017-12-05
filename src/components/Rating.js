@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons'
+import { View, StyleSheet, Text, Image } from 'react-native'
 
 const Rating = ({ rating, count }) => {
   const ratings = []
   for (let index = 0; index < 5; index++) {
     if (index < rating) {
-      ratings.push(<View key={index}><Icon name='ios-star' size={14} color="rgb(255,179,0)" /></View>)
+      ratings.push(<View key={index}><Image source={require('./img/icon_review_full.png')} style={{width: 11, height: 11}} cache="default"/></View>)
     } else {
-      ratings.push(<View key={index}><Icon name='ios-star' size={14} color="rgb(222,222,222)" /></View>)
+      ratings.push(<View key={index}><Image source={require('./img/icon_review_empty.png')} style={{width: 11, height: 11}} cache="default"/></View>)
     }
   }
 

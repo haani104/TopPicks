@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
   productImageWrapper: {
     borderBottomWidth: 1,
     borderColor: 'rgba(255,255,255,0)',
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   productImage: {
     height: 185,
@@ -88,6 +89,7 @@ const styles = StyleSheet.create({
   },
   labelText: {
     fontSize: 10,
+    color: 'rgba(0,0,0,0.54)'
   },
   shopSection: {
     flex: 1,
@@ -162,92 +164,94 @@ const styles = StyleSheet.create({
   }
 })
 
-const Product = ({ product, index, category }) => (
-  <View style={styles.productCell}>
-    <TKPTouchable>
-      <View>
-        <View style={styles.productImageWrapper}>
-          <Image
-            source={{ uri: product.image_url }}
-            style={styles.productImage}
-            cache="default"
-          />
+const Product = ({ product }) => {
+  return (
+    <View style={styles.productCell}>
+      <TKPTouchable>
+        <View>
+          <View style={styles.productImageWrapper}>
+            <Image
+              source={{ uri: product.image_url }}
+              style={styles.productImage}
+              cache="default"
+            />
+          </View>
+          <Text style={styles.productName} ellipsizeMode="tail" numberOfLines={2}>
+            {unescape(product.name)}
+          </Text>
         </View>
-        <Text style={styles.productName} ellipsizeMode="tail" numberOfLines={2}>
-          {unescape(product.name)}
-        </Text>
+      </TKPTouchable>
+      <View style={styles.priceContainer}>
+        <View style={styles.productGridNormalPrice}>
+          {product.discount_percentage !== 0 && (
+            <View style={{ height: 15 }}>
+              <Text style={styles.productGridNormalPriceText}>
+                {product.original_price}
+              </Text>
+            </View>
+          )}
+        </View>
+        <View style={styles.priceWrapper}>
+          <Text style={styles.price}>{product.price}</Text>
+          {product.discount_percentage !== 0 && (
+            <View style={styles.productGridCampaignRate}>
+              <Text style={styles.productGridCampaignRateText}>
+                {`${product.discount_percentage}% OFF`}
+              </Text>
+            </View>
+          )}
+        </View>
       </View>
-    </TKPTouchable>
-    <View style={styles.priceContainer}>
-      <View style={styles.productGridNormalPrice}>
-        {product.discount_percentage !== 0 && (
-          <View style={{ height: 15 }}>
-            <Text style={styles.productGridNormalPriceText}>
-              {product.original_price}
-            </Text>
-          </View>
-        )}
+      <Rating rating={product.rating} count={product.count_review} />
+      <View style={styles.productBadgeWrapper}>
+        {product.labels.map((l, i) => {
+          let labelTitle = l.title
+          if (l.title.indexOf('Cashback') > -1) {
+            labelTitle = 'Cashback'
+          }
+          switch (labelTitle) {
+            case 'PO':
+            case 'Grosir':
+              return (
+                <View style={styles.productLabel} key={i}>
+                  <Text style={styles.labelText}>{l.title}</Text>
+                </View>
+              )
+            case 'Cashback':
+              return (
+                <View style={styles.productCashback} key={i}>
+                  <Text style={styles.cashbackText}>{l.title}</Text>
+                </View>
+              )
+            default:
+              return null
+          }
+        })}
       </View>
-      <View style={styles.priceWrapper}>
-        <Text style={styles.price}>{product.price}</Text>
-        {product.discount_percentage !== 0 && (
-          <View style={styles.productGridCampaignRate}>
-            <Text style={styles.productGridCampaignRateText}>
-              {`${product.discount_percentage}% OFF`}
-            </Text>
-          </View>
-        )}
+      <View>
+        <Text style={styles.shopName} ellipsizeMode="tail" numberOfLines={1}>{product.shop.name}</Text>
       </View>
-    </View>
-    <Rating rating={product.rating} count={product.count_review} />
-    <View style={styles.productBadgeWrapper}>
-      {product.labels.map((l, i) => {
-        let labelTitle = l.title
-        if (l.title.indexOf('Cashback') > -1) {
-          labelTitle = 'Cashback'
-        }
-        switch (labelTitle) {
-          case 'PO':
-          case 'Grosir':
-            return (
-              <View style={styles.productLabel} key={i}>
-                <Text style={styles.labelText}>{l.title}</Text>
-              </View>
-            )
-          case 'Cashback':
-            return (
-              <View style={styles.productCashback} key={i}>
-                <Text style={styles.cashbackText}>{l.title}</Text>
-              </View>
-            )
-          default:
-            return null
-        }
-      })}
-    </View>
-    <View>
-      <Text style={styles.shopName} ellipsizeMode="tail" numberOfLines={1}>{product.shop.name}</Text>
-    </View>
-    <View style={{paddingHorizontal: 10, flexDirection: 'row'}}>
-      <View style={styles.location}>
-      <Icon name='ios-pin-outline' size={25} color="rgb(189,189,189)" />
-      <Text style={styles.shopCityName}>{product.shop.city}</Text>
-      </View>
-      <View style={{}}>
-        {product.badges.map(
-          b =>
-            b.title === 'Free Return' ? (
-              <View key={product.id} style={styles.badgeImageContainer}>
-                <Image
-                  source={{ uri: b.image_url }}
-                  style={styles.badgeImage}
-                />
-              </View>
-            ) : null,
-        )}
+      <View style={{ paddingHorizontal: 10, paddingBottom: 5,flexDirection: 'row' }}>
+        <View style={styles.location}>
+          <Icon name='ios-pin-outline' size={15} color="rgb(189,189,189)" />
+          <Text style={styles.shopCityName}>{product.shop.city}</Text>
+        </View>
+        <View style={{}}>
+          {product.badges.map(
+            b =>
+              b.title === 'Free Return' ? (
+                <View key={product.id} style={styles.badgeImageContainer}>
+                  <Image
+                    source={{ uri: b.image_url }}
+                    style={styles.badgeImage}
+                  />
+                </View>
+              ) : null,
+          )}
+        </View>
       </View>
     </View>
-  </View>
-)
+  )
+}
 
 export default Product

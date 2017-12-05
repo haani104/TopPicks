@@ -1,6 +1,13 @@
-import React, { Component } from 'react'
-import { ScrollView, StyleSheet, Text, ActivityIndicator, View } from 'react-native'
-import Product from '../components/Products'
+import React, { PureComponent } from 'react'
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  ActivityIndicator,
+  View,
+  FlatList
+} from 'react-native'
+import Product from '../components/Product'
 import Header from '../components/Header'
 import Banners from '../components/Banners'
 import MainBanner from '../components/MainBanner'
@@ -15,10 +22,9 @@ const styles = StyleSheet.create({
   }
 })
 
-class TopPick extends Component {
+class TopPick extends PureComponent {
 
   componentDidMount() {
-    console.log('TopPick componentDidMount')
     this.props.getTopPicks(this.props.pageId)
   }
 
@@ -27,24 +33,53 @@ class TopPick extends Component {
     this.props.getProducts(urls)
   }
 
-  render() {
+  handleLoadMoreProducts = () => {
+    if (this.props.products.canLoadMore) {
+      const {limit, offset} = this.props.products
+      this.props.showMoreProducts(limit, offset)
+    }
+  }
+
+  renderHeader = () => {
     if (this.props.components.length > 0 && !this.props.isFetching) {
-      
       const title = find(this.props.components, ['name', 'title_image']).data
       const mainBannerData = find(this.props.components, ['name', 'banner_image']).data
       const bannerData = find(this.props.components, ['name', 'banner_image_quadruple']).data
       const brandsData = find(this.props.components, ['name', 'brand_recommendation']).data
       const productRecommData = find(this.props.components, ['name', 'product_recommendation']).data
-      const products = this.props.products
+
       return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
           <Header title={title} />
           <MainBanner data={mainBannerData} />
           <Banners data={bannerData} />
           <Brands data={brandsData} />
-          <ProductRecomendation data={productRecommData}/>
-          <Product getProducts={this.fetchproducts} products={products}/>
-        </ScrollView>
+          <ProductRecomendation data={productRecommData} />
+          <View style={{ paddingVertical: 12, paddingLeft: 10 }}>
+            <Text style={styles.text}>Produk Pilihan</Text>
+          </View>
+        </View>
+      )
+    }
+  }
+
+  renderProduct = ({ item, index }) => (
+    <Product product={item} index={index} />
+  )
+
+  render() {
+    if (this.props.components.length > 0 && !this.props.isFetching) {
+
+      return (
+        <FlatList
+          ListHeaderComponent={this.renderHeader}
+          keyExtractor={p => p.id}
+          data={this.props.products.data}
+          onEndReachedThreshold={0.2}
+          onEndReached={this.handleLoadMoreProducts}
+          renderItem={this.renderProduct}
+          numColumns={2}
+        />
       )
     } else {
       <View style={[styles.container, { justifyContent: 'center' }]}>
